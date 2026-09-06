@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'" />
+    <title>LD PicU</title>
+  </head>
+  <body>
+    <main class="app">
+      <header class="titlebar">
+        <span class="title-mark" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
+        </span>
+        <span class="title-text">LD PICU</span>
+        <button id="settings-button" class="kbd-chip" type="button" title="Settings">Settings</button>
+      </header>
+
+      <section id="drop-zone" class="drop-card" aria-label="Drop one image here">
+        <div class="cloud-badge" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
+        </div>
+        <h2>Drop image here</h2>
+        <p class="drop-hint">or paste the newest image from your clipboard</p>
+        <button id="clipboard-button" class="pill-button" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+          Upload from Clipboard
+        </button>
+        <p class="formats">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>
+          PNG&nbsp;&middot;&nbsp;JPG&nbsp;&middot;&nbsp;GIF&nbsp;&middot;&nbsp;WebP&nbsp;&middot;&nbsp;TIFF&nbsp;&middot;&nbsp;AVIF
+        </p>
+      </section>
+
+      <div id="toast" class="toast" hidden>
+        <span class="toast-icon" id="toast-icon" aria-hidden="true"></span>
+        <span id="toast-text"></span>
+        <span id="toast-time" class="toast-time"></span>
+      </div>
+
+      <div id="error-actions" class="error-actions" hidden>
+        <button id="retry-button" class="pill-button" type="button">Retry upload</button>
+      </div>
+
+      <section id="result-card" class="result-card" hidden>
+        <div class="result-row">
+          <img id="preview" alt="Uploaded image preview" hidden />
+          <div class="result-meta">
+            <span id="result-key" class="result-key"></span>
+            <a id="result-url" class="result-url" href="#" target="_blank" rel="noreferrer"></a>
+          </div>
+          <div class="result-actions">
+            <button id="copy-button" class="chip-button" type="button">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 0 1 2-2h10"/></svg>
+              Copy URL
+            </button>
+            <button id="copy-markdown-button" class="chip-button" type="button">Copy Markdown</button>
+            <button id="clear-button" class="chip-button clear-button" type="button">Clear</button>
+          </div>
+        </div>
+      </section>
+
+      <footer class="statusbar">
+        <span class="status-dot" id="status-dot" aria-hidden="true"></span>
+        <span id="status-label">READY</span>
+        <span class="status-spacer"></span>
+        <span class="status-meta">single image &middot; S3-compatible</span>
+      </footer>
+    </main>
+
+    <dialog id="settings-dialog" aria-labelledby="settings-title">
+      <form id="settings-form" method="dialog">
+        <header class="dialog-header">
+          <h2 id="settings-title">Storage Settings</h2>
+          <button id="close-settings" class="close-button" type="button" aria-label="Close settings">&times;</button>
+        </header>
+        <label class="field">
+          <span class="field-label">S3 Endpoint</span>
+          <input name="endpoint" type="url" placeholder="https://&lt;account-id&gt;.r2.cloudflarestorage.com" required />
+        </label>
+        <div class="field-pair">
+          <label class="field">
+            <span class="field-label">Bucket Name</span>
+            <input name="bucket" required />
+          </label>
+          <label class="field">
+            <span class="field-label">Region</span>
+            <input name="region" value="auto" required />
+          </label>
+        </div>
+        <label class="field">
+          <span class="field-label">Public URL Prefix</span>
+          <input name="publicUrlPrefix" type="url" placeholder="https://img.example.com" required />
+        </label>
+        <div class="field-pair">
+          <label class="field">
+            <span class="field-label">Access Key ID</span>
+            <input name="accessKeyId" required autocomplete="off" />
+          </label>
+          <label class="field">
+            <span class="field-label">Secret Access Key</span>
+            <input name="secretAccessKey" type="password" required autocomplete="off" />
+          </label>
+        </div>
+        <div class="field-pair">
+          <label class="field toggle">
+            <input name="forcePathStyle" type="checkbox" />
+            <span class="field-label">Path-style addressing</span>
+          </label>
+          <label class="field toggle">
+            <input name="convertToWebp" type="checkbox" />
+            <span class="field-label">Convert to WebP</span>
+          </label>
+        </div>
+        <div class="field-pair">
+          <label class="field">
+            <span class="field-label">WebP Quality</span>
+            <input name="webpQuality" type="number" min="1" max="100" required />
+          </label>
+          <label class="field">
+            <span class="field-label">Copy Format</span>
+            <select name="copyFormat">
+              <option value="url">Plain URL</option>
+              <option value="markdown">Markdown image</option>
+            </select>
+          </label>
+        </div>
+        <p id="settings-error" class="form-error" hidden></p>
+        <button class="save-button" type="submit">Save Configuration</button>
+        <p class="save-hint">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Stored locally in plain text on this device
+        </p>
+      </form>
+    </dialog>
+    <script type="module" src="/src.ts"></script>
+  </body>
+</html>
