@@ -1,0 +1,11 @@
+{
+    "schema_version": 2,
+    "commit": "22351fee8c255216e197b62ecab19032bf8f22f5",
+    "indexed_at": "2026-09-07T03:06:34Z",
+    "project": "C-Project-MyProject-ld-picu",
+    "nodes": 188,
+    "edges": 341,
+    "original_size": 1507328,
+    "compressed_size": 138297,
+    "compression_level": 9
+}

@@ -54,6 +54,7 @@
       "node_modules/sharp/**/*",
       "node_modules/@img/**/*"
     ],
+    "electronLanguages": ["en-US"],
     "linux": {
       "target": ["AppImage", "deb"],
       "icon": "assets/linux-icons",

@@ -236,7 +236,7 @@ dialog {
 
 dialog::backdrop { background: rgb(0 0 0 / 62%); }
 
-dialog form { display: flex; flex-direction: column; gap: 15px; padding: 22px 24px 20px; }
+dialog form { display: flex; flex-direction: column; gap: 12px; padding: 22px 24px 20px; }
 
 .dialog-header { align-items: center; display: flex; justify-content: space-between; }
 .dialog-header h2 { font-size: 17px; font-weight: 650; }
